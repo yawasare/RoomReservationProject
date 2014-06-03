@@ -1,0 +1,61 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @room.name %>
+  <br />
+  <%= @month %>  
+  <%= @day %> 
+  <%= @year %> 
+</p>
+
+<tbody>
+ <% @meetings.each do |meet| %>
+    <tr>
+        <td><%= meet.notes %></td>
+        <td><%= link_to 'Show', meet %></td>
+        <td><%= link_to 'Edit', edit_meeting_path(@room,meet) %></td>
+        <td><%= link_to 'Destroy', meet, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    </tr>
+    <br>
+ <% end %>
+ <br>   
+ </tbody>
+
+ <%= form_for(@meeting) do |f| %>
+     <% if @meeting.errors.any? %>
+      <div id="error_explanation">
+         <h2><%= pluralize(@meeting.errors.count, "error") %> prohibited this meeting from being saved:</h2>
+         <ul> 
+         <% @meeting.errors.full_messages.each do |message| %>
+            <li><%= message %></li> 
+         <% end %>
+       </ul>
+     </div>
+    <% end %>
+ 
+    <%= f.hidden_field :room_id, :value => @room.id %>
+    <%= f.hidden_field :day    , :value => @day %>
+    <%= f.hidden_field :month  , :value => @monthnumber %>
+    <%= f.hidden_field :year   , :value => @year %>
+
+   <div class="field">
+     <%= f.label :notes %><br>
+     <%= f.text_field :notes %>
+   </div>
+   <div class="field">
+     <%= f.label :start_at %><br>
+     <%= f.time_select :start_at, ampm: true, minute_step: 5 %>
+   </div>
+   <div class="field">
+     <%= f.label :end_at %><br>
+     <%= f.time_select :end_at , ampm: true,  minute_step: 5%>
+   </div>
+   <div class="actions">   
+     <%= f.submit %>
+   </div>
+<% end %>
+
+
+<%= link_to 'Edit', edit_room_path(@room) %> |
+<%= link_to 'Back', rooms_path %>

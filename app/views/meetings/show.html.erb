@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Notes:</strong>
+  <%= @meeting.notes %>
+</p>
+
+<p>
+  <strong>Start:</strong>
+  <%= @meeting.start_at %>
+</p>
+
+<p>
+  <strong>End:</strong>
+  <%= @meeting.end_at %>
+</p>
+
+<%= link_to 'Edit', edit_meeting_path(@meeting) %> |
+<%= link_to 'Back', meetings_path %>
