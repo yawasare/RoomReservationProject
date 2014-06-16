@@ -1,6 +1,6 @@
 class MeetingsController < ApplicationController
-  before_action :set_meeting, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_meeting, only: [:show,:edit,:update,:destroy,:move,:resize]  
+    
   # GET /meetings
   # GET /meetings.json
   def index
@@ -25,9 +25,11 @@ class MeetingsController < ApplicationController
   # POST /meetings.json
   def create
     @meeting = Meeting.new(meeting_params)
+    
     respond_to do |format|
       if @meeting.save
         @room = Room.find(@meeting.room_id) 
+        @meeting.color = Meeting::COLORS[@meeting.room_id]
         format.html { redirect_to @room, notice: 'Meeting was successfully created.' }
         format.json { render :show, status: :created, location: @room}
       else
@@ -36,13 +38,13 @@ class MeetingsController < ApplicationController
       end
     end
   end
-
   # PATCH/PUT /meetings/1
   # PATCH/PUT /meetings/1.json
   def update
     respond_to do |format|
-      @room  = Room.find(@meeting.room_id)    
-      if @meeting.update(meeting_params)
+      @room  = Room.find(@meeting.room_id)   
+      if @meeting.update(meeting_params)   
+        @meeting.color = Meeting::COLORS[params[:room_id]]
         format.html { redirect_to @room, notice: 'Meeting was successfully updated.' }
         format.json { render :show, status: :ok, location: @room}
       else
@@ -51,7 +53,6 @@ class MeetingsController < ApplicationController
       end
     end
   end
-
   # DELETE /meetings/1
   # DELETE /meetings/1.json
   def destroy
@@ -63,6 +64,30 @@ class MeetingsController < ApplicationController
     end
   end
 
+  def move 
+    if @meeting
+        @meeting.start_at= make_time(@meeting.start_at)
+        @meeting.end_at  = make_time(@meeting.end_at)
+        if @meeting.save
+            flash[:notice] = "Meeting updated"
+        else
+            flash[:notice] = "Meeting could not update"
+        end
+    end
+        render nothing: true
+  end
+
+  def resize
+    if @meeting
+        @meeting.end_at  = make_time(@meeting.end_at)
+        if @meeting.save
+            flash[:notice] = "Meeting updated"
+        else
+            flash[:notice] = @meeting.errors.values
+        end
+    end
+        render nothing: true
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_meeting
@@ -71,6 +96,12 @@ class MeetingsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def meeting_params
-      params.require(:meeting).permit(:notes, :start_at, :end_at,:room_id,:day,:month,:year)
+      params.require(:meeting).permit(:notes, :start_at, :end_at,:room_id)
+    end
+
+    def make_time(event_time)
+      time = params[:day_delta].to_i.days.from_now(event_time)
+      time = params[:minute_delta].to_i.minutes.from_now(time)
+      return time
     end
 end

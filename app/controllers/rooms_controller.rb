@@ -11,16 +11,6 @@ class RoomsController < ApplicationController
   # GET /rooms/1.json
   def show
     set_room
-    @year     = Time.now.year
-    @day      = Time.now.day
-    @monthnumber = Time.now.month
-    @month    = Date::MONTHNAMES[Time.now.month]
-
-    @meetings = Meeting.where(:room_id => @room.id)
-    @meetings = @meetings.where(:year => @year)
-    @meetings = @meetings.where(:month => @monthnumber)
-    @meetings = @meetings.where(:day => @day)
-
     @meeting  = Meeting.new
   end
 

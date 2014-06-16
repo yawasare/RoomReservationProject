@@ -4,9 +4,7 @@ class CreateMeetings < ActiveRecord::Migration
       t.string :notes
       t.datetime :start_at
       t.datetime :end_at
-      t.integer  :day
-      t.integer  :month
-      t.integer  :year
+      t.string   :color
       t.belongs_to :room, index:true
 
       t.timestamps
