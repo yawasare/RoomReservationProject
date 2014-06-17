@@ -10,7 +10,7 @@ class Meeting < ActiveRecord::Base
     COLORS = ['#FF8080','#FFFF80','#B2FFB2','#B280B2','#80FFFF','#4D4DFF','#999999','#FF944D','#335C33','#855C33']
 
     def meeting_time_is_free        
-          meetings = meetings.where(:room_id => room_id)
+          meetings = Meeting.where(:room_id => room_id)
           for meeting in meetings
               if end_at > meeting.start_at and end_at < meeting.end_at
                   if room_id == meeting.room_id and not self == meeting

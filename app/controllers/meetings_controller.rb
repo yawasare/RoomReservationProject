@@ -30,6 +30,7 @@ class MeetingsController < ApplicationController
       if @meeting.save
         @room = Room.find(@meeting.room_id) 
         @meeting.color = Meeting::COLORS[@meeting.room_id]
+        @meeting.save
         format.html { redirect_to @room, notice: 'Meeting was successfully created.' }
         format.json { render :show, status: :created, location: @room}
       else
@@ -45,6 +46,7 @@ class MeetingsController < ApplicationController
       @room  = Room.find(@meeting.room_id)   
       if @meeting.update(meeting_params)   
         @meeting.color = Meeting::COLORS[params[:room_id]]
+        @meeting.save
         format.html { redirect_to @room, notice: 'Meeting was successfully updated.' }
         format.json { render :show, status: :ok, location: @room}
       else

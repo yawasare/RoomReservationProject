@@ -32,7 +32,8 @@ $(document).on('ready page:load',function() {
         slotEventOverlap:false,
         selectable:true,
         selectHelper:true,
-        
+        eventTextColor: 'black' , 
+
         header: {
             left: 'agendaWeek,agendaDay',
             center: 'title'
