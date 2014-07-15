@@ -5,12 +5,15 @@ class RoomsController < ApplicationController
   # GET /rooms.json
   def index
     @rooms = Room.all
+    @meetings = Meeting.all
   end
 
   # GET /rooms/1
   # GET /rooms/1.json
   def show
     set_room
+    @rooms=  Room.all
+    @meetings = Meeting.where(:room_id => @room.id)
     @meeting  = Meeting.new
   end
 
@@ -73,4 +76,5 @@ class RoomsController < ApplicationController
     def room_params
       params.require(:room).permit(:name)
     end
+
 end

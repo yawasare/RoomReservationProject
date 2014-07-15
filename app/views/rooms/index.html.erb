@@ -10,7 +10,7 @@
 
   <tbody>
     <% @rooms.each do |room| %>
-      <tr>
+        <tr id=<%=room.id%> name="room" style="background-color:<%= Meeting::COLORS[room.id % 10] %>">
         <td><%= room.name %></td>
         <td><%= link_to 'Show', room %></td>
         <td><%= link_to 'Edit', edit_room_path(room) %></td>
@@ -19,14 +19,30 @@
     <% end %>
   </tbody>
 </table>
-
 <br>
 <%= link_to 'New Room', new_room_path %>
 
+<%@meetings.each do |meeting| %>
+    <% if meeting.errors.any? %>
+        <div id="error_explanation">
+            <h2><%= pluralize(meeting.errors.count, "error") %> prohibited this meeting from being saved:</h2>
+ 
+            <ul>
+                <% meeting.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                <% end %>
+            </ul>  
+        </div>
+    <%end%>
+<%end%>
+
+    
 <div>
     <div id='calendar'></div>
 </div>
-<div id="event_desc_dialog" class="dialog" style="display:none;"></div>
+<div id="event_desc_dialog" class="dialog" style="display:none;">
+</div>
+
 <div id="create_meeting_dialog" class="dialog" style ="display:none;">
     <%= render 'meetingform' %>
 </div>

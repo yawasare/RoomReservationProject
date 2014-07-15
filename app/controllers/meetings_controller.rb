@@ -1,6 +1,8 @@
 class MeetingsController < ApplicationController
+  
   before_action :set_meeting, only: [:show,:edit,:update,:destroy,:move,:resize]  
     
+  respond_to :html, :xml, :json
   # GET /meetings
   # GET /meetings.json
   def index
@@ -16,11 +18,11 @@ class MeetingsController < ApplicationController
   def new
     @meeting = Meeting.new
   end
-
+ 
   # GET /meetings/1/edit
   def edit
   end
-
+ 
   # POST /meetings
   # POST /meetings.json
   def create
@@ -29,12 +31,12 @@ class MeetingsController < ApplicationController
     respond_to do |format|
       if @meeting.save
         @room = Room.find(@meeting.room_id) 
-        @meeting.color = Meeting::COLORS[@meeting.room_id]
+        @meeting.color = Meeting::COLORS[@meeting.room_id % 10]
         @meeting.save
-        format.html { redirect_to @room, notice: 'Meeting was successfully created.' }
-        format.json { render :show, status: :created, location: @room}
+        format.html { redirect_to '/', notice: 'Meeting was successfully created.' }
+        format.json { render :show, status: :created, location:'/'}
       else
-        format.html { render :new }
+        format.html { redirect_to '/'}
         format.json { render json: @meeting.errors, status: :unprocessable_entity }
       end
     end
@@ -44,8 +46,8 @@ class MeetingsController < ApplicationController
   def update
     respond_to do |format|
       @room  = Room.find(@meeting.room_id)   
-      if @meeting.update(meeting_params)   
-        @meeting.color = Meeting::COLORS[params[:room_id]]
+      if @meeting.update(meeting_params)    
+        @meeting.color = Meeting::COLORS[params[:room_id] % 10]
         @meeting.save
         format.html { redirect_to @room, notice: 'Meeting was successfully updated.' }
         format.json { render :show, status: :ok, location: @room}
@@ -70,25 +72,17 @@ class MeetingsController < ApplicationController
     if @meeting
         @meeting.start_at= make_time(@meeting.start_at)
         @meeting.end_at  = make_time(@meeting.end_at)
-        if @meeting.save
-            flash[:notice] = "Meeting updated"
-        else
-            flash[:notice] = "Meeting could not update"
-        end
+        @meeting.save
+        respond_with(@meeting)
     end
-        render nothing: true
   end
 
   def resize
     if @meeting
         @meeting.end_at  = make_time(@meeting.end_at)
-        if @meeting.save
-            flash[:notice] = "Meeting updated"
-        else
-            flash[:notice] = @meeting.errors.values
-        end
+        @meeting.save
+        respond_with(@meeting)
     end
-        render nothing: true
   end
   private
     # Use callbacks to share common setup or constraints between actions.

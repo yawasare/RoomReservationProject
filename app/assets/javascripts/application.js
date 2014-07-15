@@ -16,6 +16,7 @@
 //= require_tree .
 //= require fullcalendar
 //= require jquery.ui.all
+//= require jquery.turbolinks
 
 $(document).on('ready page:load',function() {
       // page is now ready, initialize the calendar...    
@@ -48,7 +49,15 @@ $(document).on('ready page:load',function() {
             $.ajax({
                 data: {day_delta: dayDelta,minute_delta: minuteDelta},
                 type: "POST",
-                url:  '/meetings/' + event.id + '/move',
+                url:  '/meetings/' + event.id + '/move.json',
+                error: function (jqXHR,textStatus,errorThrown){
+                    console.log("error");        
+                    revertFunc();
+                    alert(JSON.parse(jqXHR.responseText).errors.base[0]);
+                },
+                success: function(data){
+                    console.log(data);
+                }
             });
         },
 
@@ -56,10 +65,76 @@ $(document).on('ready page:load',function() {
             $.ajax({
                data: {day_delta: dayDelta,minute_delta: minuteDelta},
                type: "POST",
-               url:  '/meetings/' + event.id + '/resize',
+               url:  '/meetings/' + event.id + '/resize.json',
+               error: function (jqXHR,textStatus,errorThrown){
+                    console.log("error");        
+                    revertFunc();
+                    alert(JSON.parse(jqXHR.responseText).errors.base[0]);
+                },
+                success: function(data){
+                    console.log(data);
+                }
             });
         },
 });    
+
+  $('#calendar_show').fullCalendar({
+      allDayDefault: false,  
+      events: '/rooms/'+'3'+'.json',  
+      editable: true,
+      disableResizing :false,
+      weekends: false,
+      allDaySlot: false,
+      minTime:6,  
+      maxTime:20,
+      slotEventOverlap:false,
+      selectable:true,
+      selectHelper:true,
+      eventTextColor: 'black',
+      
+        header: {
+            left: 'agendaWeek,agendaDay',
+            center: 'title'
+        },
+
+        select: function(start, end, jsEvent, view) {
+            form.display({start_at: new Date(start.getTime()), 
+                        end_at:   new Date(end.getTime())} );
+        },
+
+        eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
+            $.ajax({
+                data: {day_delta: dayDelta,minute_delta: minuteDelta},
+                type: "POST",
+                url:  '/meetings/' + event.id + '/move.json',
+                error: function (jqXHR,textStatus,errorThrown){
+                    console.log("error");        
+                    revertFunc();
+                    alert(JSON.parse(jqXHR.responseText).errors.base[0]);
+                },
+                success: function(data){
+                    console.log(data);
+                }
+            });
+        },
+
+        eventResize: function(event, dayDelta, minuteDelta, revertFunc){
+            $.ajax({
+               data: {day_delta: dayDelta,minute_delta: minuteDelta},
+               type: "POST",
+               url:  '/meetings/' + event.id + '/resize.json',
+               error: function (jqXHR,textStatus,errorThrown){
+                    console.log("error");        
+                    revertFunc();
+                    alert(JSON.parse(jqXHR.responseText).errors.base[0]);
+                },
+                success: function(data){
+                    console.log(data);
+                }
+            });
+        }
+  });
+
  form = {
             display: function(options) {
                if (typeof(options) == 'undefined') { options = {} }
@@ -75,7 +150,9 @@ $(document).on('ready page:load',function() {
                     title: 'New Event',
                     modal: true,
                     width: 500,
-                    close: function(event, ui) { $('#create_event_dialog').dialog('destroy') }
+                    close: function(event, ui) { 
+                        $('#create_event_dialog').dialog('destroy')
+                    }
                });
             },
             fetch: function(options){
@@ -87,7 +164,7 @@ $(document).on('ready page:load',function() {
               });
             },
             setTime: function(type, time) {
-                 var $year = $(type + '_1i'), $month = $(type + '_2i'), $day = $(type + '_3i'), $hour = $(type + '_4i'), $minute = $(type + '_5i')
+                 var $year=$(type + '_1i'), $month=$(type + '_2i'), $day=$(type + '_3i'), $hour=$(type + '_4i'), $minute=$(type + '_5i')
                  $year.val(time.getFullYear());
                  $month.prop('selectedIndex', time.getMonth());
                  $day.prop('selectedIndex', time.getDate() - 1);

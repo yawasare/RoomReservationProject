@@ -10,7 +10,6 @@ Rails.application.routes.draw do
       post :move
       post :resize
       post :new
-      get  :new
     end 
   end
 

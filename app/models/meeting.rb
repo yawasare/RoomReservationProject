@@ -12,28 +12,29 @@ class Meeting < ActiveRecord::Base
     def meeting_time_is_free        
           meetings = Meeting.where(:room_id => room_id)
           for meeting in meetings
-              if end_at > meeting.start_at and end_at < meeting.end_at
+              if end_at > meeting.start_at and end_at <= meeting.end_at
                   if room_id == meeting.room_id and not self == meeting
-                    errors.add(:base, "conflicting times")
+                    errors.add(:base, "There is already a meeting in the room at this time")
                   end
               end
-              if start_at > meeting.start_at and start_at < meeting.end_at
+              if start_at >= meeting.start_at and start_at < meeting.end_at
                   if room_id == meeting.room_id and not self == meeting
-                   errors.add(:base, "conflicting times")
+                   errors.add(:base, "There is already a meeting in the room at this time")
                   end 
               end
-              if meeting.start_at > start_at and meeting.start_at < end_at
+              if meeting.start_at >= start_at and meeting.start_at < end_at
                   if room_id == meeting.room_id and not self == meeting
-                   errors.add(:base, "conflicting times")
+                   errors.add(:base, "There is already a meeting in the room at this time")
                   end 
               end 
-              if meeting.end_at > start_at and meeting.end_at < end_at
+              if meeting.end_at > start_at and meeting.end_at <= end_at
                   if room_id == meeting.room_id and not self == meeting
-                   errors.add(:base,"conflicting times")
+                   errors.add(:base,"There is already a meeting in the room at this time")
                   end 
               end
           end  
     end
+
     def meeting_time_is_valid
         if start_at > end_at
             errors.add(:base,"Time is invalid, start time cannot be after meetime")
@@ -45,4 +46,5 @@ class Meeting < ActiveRecord::Base
             errors.add(:base, "Time is invalid, meeting cannot be scheduled in the past")
         end
     end
+
 end
