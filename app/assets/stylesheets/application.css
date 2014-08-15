@@ -16,3 +16,7 @@
  *= require_self
  *= require jquery.ui.all
  */
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+

@@ -1,26 +1,18 @@
-<h1>Meetings</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
+<div class= "center-block" style="width: 50%">
+   <div class="btn-toolbar" style="width: 100%; text-align: center" >
     <% @rooms.each do |room| %>
-        <tr id=<%=room.id%> name="room" style="background-color:<%= Meeting::COLORS[room.id % 10] %>">
-        <td><%= room.name %></td>
-        <td><%= link_to 'Show', room %></td>
-        <td><%= link_to 'Edit', edit_room_path(room) %></td>
-        <td><%= link_to 'Destroy', room, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+        <a href="/rooms/<%=room.id%>" style="none" >
+        <button type="button" class="btn btn-default" style="background-color:<%= Meeting::COLORS[room.id % 10] %>">
+            <%= room.name%>
+        </button>
+        </a>
     <% end %>
-  </tbody>
-</table>
+     <%= link_to 'New Room', new_room_path %>
+   </div> 
+</div>
+
 <br>
-<%= link_to 'New Room', new_room_path %>
+<br>
 
 <%@meetings.each do |meeting| %>
     <% if meeting.errors.any? %>
@@ -36,13 +28,27 @@
     <%end%>
 <%end%>
 
-    
-<div>
+<br>    
+
+<div class ="center-block" style="width: 80%">
     <div id='calendar'></div>
 </div>
+
 <div id="event_desc_dialog" class="dialog" style="display:none;">
 </div>
 
 <div id="create_meeting_dialog" class="dialog" style ="display:none;">
     <%= render 'meetingform' %>
 </div>
+
+<br>
+<div class= "center-block" style="width: 50%">
+   <div class="btn-toolbar" style="width: 100%; text-align: center" >
+      <button type="button" class="btn btn-default" id='export'>
+           <%= link_to 'Export', "/rooms.ics" %>
+      </button>
+   </div> 
+</div>
+
+<br>
+<br>

@@ -6,6 +6,21 @@ class RoomsController < ApplicationController
   def index
     @rooms = Room.all
     @meetings = Meeting.all
+    respond_to do |format|
+      format.html
+      format.ics do
+        cal = Icalendar::Calendar.new
+        @meetings.each do |meeting|
+            event = Icalendar::Event.new
+            event.dtstart = meeting.start_at
+            event.dtend   = meeting.end_at
+            event.summary = meeting.notes
+            event.description = meeting.room.name
+            cal.add_event(event)
+        end
+        render :text => cal.to_ical
+      end
+    end
   end
 
   # GET /rooms/1
@@ -15,6 +30,22 @@ class RoomsController < ApplicationController
     @rooms=  Room.all
     @meetings = Meeting.where(:room_id => @room.id)
     @meeting  = Meeting.new
+    @ics_route = "/rooms/#{ @room.id.to_s }.ics"
+    respond_to do |format|
+      format.html
+      format.ics do
+        cal = Icalendar::Calendar.new
+        @meetings.each do |meeting|
+            event = Icalendar::Event.new
+            event.dtstart = meeting.start_at
+            event.dtend   = meeting.end_at
+            event.summary = meeting.notes
+            event.description = meeting.room.name
+            cal.add_event(event)
+        end
+        render :text => cal.to_ical
+      end
+    end
   end
 
   # GET /rooms/new
@@ -42,6 +73,10 @@ class RoomsController < ApplicationController
     end
   end
 
+  def export
+    
+  end
+  
   # PATCH/PUT /rooms/1
   # PATCH/PUT /rooms/1.json
   def update

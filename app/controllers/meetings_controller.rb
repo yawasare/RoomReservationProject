@@ -1,3 +1,5 @@
+require 'icalendar'
+
 class MeetingsController < ApplicationController
   
   before_action :set_meeting, only: [:show,:edit,:update,:destroy,:move,:resize]  
@@ -34,7 +36,7 @@ class MeetingsController < ApplicationController
         @meeting.color = Meeting::COLORS[@meeting.room_id % 10]
         @meeting.save
         format.html { redirect_to '/', notice: 'Meeting was successfully created.' }
-        format.json { render :show, status: :created, location:'/'}
+        format.json { render :show, status: :created,location:'/'}
       else
         format.html { redirect_to '/'}
         format.json { render json: @meeting.errors, status: :unprocessable_entity }
@@ -84,6 +86,7 @@ class MeetingsController < ApplicationController
         respond_with(@meeting)
     end
   end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_meeting

@@ -39,9 +39,14 @@ gem 'jquery-ui-rails'
 
 gem 'jquery-turbolinks'
 
+gem 'bootstrap-sass'
+
+gem 'autoprefixer-rails'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
 # Use debugger
 gem 'byebug', group: [:development, :test]
 
+gem 'icalendar'

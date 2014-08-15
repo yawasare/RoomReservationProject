@@ -4,8 +4,7 @@ Rails.application.routes.draw do
       post :index
     end  
   end
-  resources :meetings do
-
+  resources :meetings do 
     member do
       post :move
       post :resize

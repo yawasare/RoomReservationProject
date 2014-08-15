@@ -1,12 +1,29 @@
-<p>
-  <strong>Name:</strong>
-  <%= @room.name %>
-</p>
-<% if flash[:notice] %>
-   <div class="notice"><%= flash[:notice] %></div>
-<% end %>
-  
-<div id='calendar_show'></div>
+<div class= "center-block" style="width: 50%">
+    <div class="btn-toolbar" style="width: 100%; text-align: center" >
+        <% @rooms.each do |room| %>
+        <a href="/rooms/<%=room.id%>" style="none" >
+         <% if @room.id == room.id %>
+            <button type="button" class="btn btn-default" style="background-color:<%= Meeting::COLORS[room.id % 10] %>">
+            <%= room.name%>
+            </button>
+        <% else %>
+             <button type="button" class="btn btn-default" style="background-color:white">
+            <%= room.name%>
+            </button>
+        <% end %>
+        </a>
+    <% end %>
+ </div>
+</div>
+
+<br>
+<br>
+
+<div class ="center-block" style="width: 80%">
+    <div 
+        id='calendar_show'>
+    </div>
+</div>
 
 <script>
     $(document).on('ready page:load',function() {
@@ -15,17 +32,25 @@
             <%@rooms.each do |aRoom| %>
                 $('#calendar_show').fullCalendar('removeEventSource','/rooms/'+<%=aRoom.id%>+'.json');
             <%end%>
-            
+
             $('#calendar_show').fullCalendar('addEventSource','/rooms/'+<%=@room.id%>+'.json' );
             $('#calendar_show').fullCalendar('refetchEvents'); 
     });
 </script>
 
 <div id="event_desc_dialog" class="dialog" style="display:none;"></div>
-
 <div id="create_meeting_dialog" class="dialog" style ="display:none;">
       <%= render 'meetingform' %>
 </div>
 
-<%= link_to 'Edit', edit_room_path(@room) %> |
-<%= link_to 'Back', rooms_path %>
+<br>
+<div class= "center-block" style="width: 50%">
+ <div class="btn-toolbar" style="width: 100%; text-align: center" >
+  <button type="button" class="btn btn-default" id='export'>
+    <%= link_to 'Export', @ics_route %>
+  </button>
+ </div> 
+</div>
+
+<br>
+<br>
